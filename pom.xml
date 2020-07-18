@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.example</groupId>
@@ -159,12 +161,28 @@
 						</property>
 					</properties>
 					<!-- Run TestNG xml file -->
-					<suiteXmlFiles>
+			<!-- 		<suiteXmlFiles>
 						<file>/resources/runForBankGuru.xml</file>
-					</suiteXmlFiles>
+					</suiteXmlFiles> -->
 
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<!-- I don't specify version at all (Spring Boot can autoconfigure plugin 
+					version) -->
+				<executions>
+					<execution>
+						<!-- changed <id> to <phase>, but I don't know whether it's important 
+							or not. -->
+						<phase>integration-test</phase>
+						<!-- ... no changes here: the same as in the question ... -->
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 
