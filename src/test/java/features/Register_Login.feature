@@ -20,5 +20,5 @@ Feature: Register And Login to BankGuru Application
 
 		Examples: Registration Info
 		
-			| Email_ID							| 	UserID			| Password		|
-			| khanhppn@yopmail.com  |		mngr293070	|	yhAsEsA			|
+			| Email_ID							| 	UserID			| Password	|
+			| khanhppn@yopmail.com  |		mngr293070	|	yhAsEsA		|

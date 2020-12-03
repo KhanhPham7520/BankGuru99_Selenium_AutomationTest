@@ -490,7 +490,6 @@ public abstract class AbstractPages {
 		jsExcutor = (JavascriptExecutor) driver;
 		String originalStyle = element.getAttribute("style");
 		jsExcutor.executeScript("arguments[0].setAttribute(arguments[1], arguments[2])", element, "style", "border: 3px solid red; border-style: dashed;");
-		// sleepInSecond();
 		jsExcutor.executeScript("arguments[0].setAttribute(arguments[1], arguments[2])", element, "style", originalStyle);
 
 	}
