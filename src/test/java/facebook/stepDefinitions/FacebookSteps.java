@@ -1,14 +1,12 @@
-package stepDefinitions;
+package facebook.stepDefinitions;
 
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.When;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.When;
-
-import cucumber.api.java.en.Then;
-import io.github.bonigarcia.wdm.WebDriverManager;
 
 import java.util.concurrent.TimeUnit;
 
@@ -16,13 +14,18 @@ public class FacebookSteps {
 
     WebDriver driver;
 
-    @Given("^Open Facebook application$")
+    @Before
     public void openFacebookApplication() {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
 
         driver.get("https://www.facebook.com/");
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+    }
+
+    @After
+    public void closeApplication() {
+        driver.quit();
     }
 
 //	@When("^Input to Username textbox$")
@@ -55,10 +58,28 @@ public class FacebookSteps {
         driver.findElement(By.name("login")).click();
     }
 
-    @Then("^Close application$")
-    public void closeApplication() throws Throwable {
-        driver.quit();
+
+
+
+
+    //@When("^Input to Username and Password$")
+//    public void inputToUsernameAndPassword(DataTable table){
+//        List<Map<String, String>> customer = table.asMaps(String.class, String.class);
+
+//        driver.findElement(By.id("email")).clear();
+//        driver.findElement(By.id("email")).sendKeys(customer.get(0).get("Username"));
+//
+//        driver.findElement(By.id("pass")).clear();
+//		driver.findElement(By.id("pass")).sendKeys(customer.get(0).get("Password"));
+
+//        for(Map<String, String> loginInfo : table.asMaps(String.class, String.class){
+//            driver.findElement(By.id("email")).clear();
+//            driver.findElement(By.id("email")).sendKeys(loginInfo.get("Username"));
+//
+//            driver.findElement(By.id("pass")).clear();
+//            driver.findElement(By.id("pass")).sendKeys(loginInfo.get("Password"));
+//        }
     }
 
 
-}
+
