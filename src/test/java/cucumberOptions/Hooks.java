@@ -3,6 +3,7 @@ package cucumberOptions;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -19,7 +20,9 @@ import commons.GlobalConstants;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class Hooks {
+	// Run for many thread
 	private static WebDriver driver;
+	private static final Logger log = Logger.getLogger(Hooks.class.getName());
 
 	public synchronized static WebDriver openAndQuitBrowser() {
 
