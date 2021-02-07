@@ -1,18 +1,14 @@
 package commons;
 
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 public abstract class AbstractPages {
@@ -336,10 +332,7 @@ public abstract class AbstractPages {
         findElementByXpath(driver, locator, values).click();
     }
 
-    public void clickIntoLink(WebDriver driver, String locator) {
-        waitToElementClickable(driver, locator);
-        findElementByXpath(driver, locator).click();
-    }
+
 
     public void clickIntoCheckbox(WebDriver driver, String locator) {
         waitToElementClickable(driver, locator);
@@ -361,12 +354,12 @@ public abstract class AbstractPages {
 
     }
 
-    public String getTextElement(WebDriver driver, String locator) {
+    public String getText(WebDriver driver, String locator) {
         waitToElementVisible(driver, locator);
         return findElementByXpath(driver, locator).getText();
     }
 
-    public String getTextElement(WebDriver driver, String locator, String... values) {
+    public String getText(WebDriver driver, String locator, String... values) {
         waitToElementVisible(driver, locator, values);
         return findElementByXpath(driver, locator, values).getText();
     }
@@ -493,6 +486,10 @@ public abstract class AbstractPages {
     public void inputToTextbox(WebDriver driver, String locator, String enterValue) {
         waitToElementVisible(driver, locator);
         sendKeyToElement(driver, locator, enterValue);
+    }
+
+    public void switchToPage(WebDriver driver, String urlValue) {
+        driver.get(urlValue);
     }
 
     public void switchToPopUpModal(WebDriver driver) {

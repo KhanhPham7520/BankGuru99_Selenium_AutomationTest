@@ -6,15 +6,13 @@ import cucumber.api.CucumberOptions;
 import cucumber.api.SnippetType;
 import cucumber.api.junit.Cucumber;
 
-
 @RunWith(Cucumber.class)
 @CucumberOptions(features = "src/test/java/bankGuru/features",
         glue = "bankGuru.stepDefinitions",
         monochrome = true, snippets = SnippetType.CAMELCASE,
-        dryRun = true,
+        //dryRun = true,
         plugin = {"pretty", "html:target/site/cucumber-report-default", "json:target/site/cucumber.json"},
         tags = {"@Register_Login"})
 public class BankGuruTestRunner {
-
 
 }

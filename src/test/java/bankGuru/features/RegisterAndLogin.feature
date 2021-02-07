@@ -1,8 +1,8 @@
 Feature: Register and Login
-@Register_Login
-  @Scenario:
+
+  @Register_Login
   Scenario: Register to system and login
-    Given Get login page url
+   Given Get login page url
     When Open Register page
     And Input to Email textbox
     And Click To Submit button

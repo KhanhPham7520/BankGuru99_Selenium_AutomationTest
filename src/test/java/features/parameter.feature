@@ -13,7 +13,6 @@ Feature: Parameter Feature
     And Click To Submit button
 
 
-
   @multiple_param
   Scenario: Scenario has parameter
     When Input to Username textbox with "automationtest@gmail.com" and password with "123456"

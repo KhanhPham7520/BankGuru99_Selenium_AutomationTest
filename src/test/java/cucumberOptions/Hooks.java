@@ -1,10 +1,8 @@
 package cucumberOptions;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
-
+import commons.GlobalConstants;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import junit.framework.Assert;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.openqa.selenium.WebDriver;
@@ -13,27 +11,28 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.UnreachableBrowserException;
-import org.testng.Assert;
-import org.testng.Reporter;
 
-import commons.GlobalConstants;
-import io.github.bonigarcia.wdm.WebDriverManager;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class Hooks {
+	private static final Logger log = Logger.getLogger(Hooks.class.getName());
 	// Run for many thread
 	private static WebDriver driver;
-	private static final Logger log = Logger.getLogger(Hooks.class.getName());
 
 	public synchronized static WebDriver openAndQuitBrowser() {
 
 		String browser = System.getProperty("BROWSER");
+		System.out.println("Browser name run by commmand line = "+browser);
 
 		if (driver == null) {
 			try {
 				if (browser == null) {
 					browser = System.getenv("BROWSER");
 					if (browser == null) {
-						browser = "firefox";
+						browser = "chrome";
 					}
 				}
 
@@ -71,7 +70,7 @@ public class Hooks {
 				// Runtime.getRuntime().addShutdownHook(new Thread(new BrowserCleanup()));
 			}
 		}
-		driver.get(GlobalConstants.BANKGURU_URL);
+		driver.get(GlobalConstants.LOGIN_BANKGURU_URL);
 		driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
 		return driver;
 
@@ -90,7 +89,6 @@ public class Hooks {
 			pass = false;
 			// VerificationFailures.getFailures().addFailureForTest(Reporter.getCurrentTestResult(),
 			// e);
-			Reporter.getCurrentTestResult().setThrowable(e);
 		}
 		return pass;
 	}
@@ -109,7 +107,6 @@ public class Hooks {
 			// log.info(" -------------------------- FAILED -------------------------- ");
 			// VerificationFailures.getFailures().addFailureForTest(Reporter.getCurrentTestResult(),
 			// e);
-			Reporter.getCurrentTestResult().setThrowable(e);
 		}
 		return pass;
 	}
