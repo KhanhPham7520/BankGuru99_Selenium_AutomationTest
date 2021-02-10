@@ -16,7 +16,9 @@ public class GlobalConstants {
 
     // Chrome driver path
     public static final String CHROME_DRIVER_SYSTEM_KEY = "webdriver.chrome.driver";
-    public static final String CHROME_DRIVER_SYSTEM_VALUE = rootFolderPath + "/src/main/resources/browserDrivers/chromedriver";
+   // public static final String CHROME_DRIVER_SYSTEM_VALUE = rootFolderPath + "/browserDrivers/chromedriver";
+	public static final String CHROME_DRIVER_SYSTEM_VALUE = rootFolderPath + "/src/main/resources/browserDrivers/chromedriver";
+
     // Edge driver path
     public static final String EDGE_DRIVER_SYSTEM_KEY = "webdriver.edge.driver";
     public static final String EDGE_DRIVER_SYSTEM_VALUE = rootFolderPath + "/browserDrivers/msedgedriver";

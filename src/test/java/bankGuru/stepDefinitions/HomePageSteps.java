@@ -12,7 +12,7 @@ public class HomePageSteps {
 	WebDriver driver;
 	HomePageObject homePage;
 
-	public HomePageSteps(WebDriver driver) {
+	public HomePageSteps() {
 		this.driver = Hooks.openAndQuitBrowser();
 		homePage = PageGeneratorManager.getHomePage(driver);
 	}

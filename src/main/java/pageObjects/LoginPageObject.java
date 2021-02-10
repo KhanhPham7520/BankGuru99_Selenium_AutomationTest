@@ -18,6 +18,6 @@ public class LoginPageObject extends AbstractPages {
 
     public void getLoginPageUrl() {
         waitToElementVisible(driver, GlobalConstants.LOGIN_BANKGURU_URL);
-    openUrl(driver, GlobalConstants.LOGIN_BANKGURU_URL);
+        openUrl(driver, GlobalConstants.LOGIN_BANKGURU_URL);
     }
 }

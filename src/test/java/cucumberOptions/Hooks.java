@@ -1,199 +1,116 @@
 package cucumberOptions;
 
-import commons.GlobalConstants;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import junit.framework.Assert;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
+import commons.GlobalConstants;
+import cucumber.api.java.Before;
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class Hooks {
-	private static final Logger log = Logger.getLogger(Hooks.class.getName());
 	// Run for many thread
-	private static WebDriver driver;
+		private static WebDriver driver;
+		private static final Logger log = Logger.getLogger(Hooks.class.getName());
 
-	public synchronized static WebDriver openAndQuitBrowser() {
+		@Before // synchronized = handle đồng bộ
+		public synchronized static WebDriver openAndQuitBrowser() {
+			// Run by Maven command line
+			String browser = System.getProperty("BROWSER");
+			System.out.println("Browser name run by command line = " + browser);
 
-		String browser = System.getProperty("BROWSER");
-		System.out.println("Browser name run by commmand line = "+browser);
-
-		if (driver == null) {
-			try {
-				if (browser == null) {
-					browser = System.getenv("BROWSER");
+			// Check driver đã được khởi tạo hay chưa?
+			if (driver == null) {
+				
+				// Happy path case
+				try {
+					// Kiem tra BROWSER = null -> gan = chrome/ firefox (browser default for project)
 					if (browser == null) {
-						browser = "chrome";
+						// Get browser name from Environment Variable in OS
+						browser = System.getenv("BROWSER");
+						if (browser == null) {
+							// Set default browser
+							browser = "chrome";
+						}
 					}
+
+					switch (browser) {
+					case "chrome":
+					System.setProperty(GlobalConstants.CHROME_DRIVER_SYSTEM_KEY, GlobalConstants.CHROME_DRIVER_SYSTEM_VALUE);
+					//	WebDriverManager.chromedriver().setup();
+						driver = new ChromeDriver();
+						break;
+					case "hchrome":
+						WebDriverManager.chromedriver().version("78.0.3904.70").setup();
+						ChromeOptions chromeOptions = new ChromeOptions();
+						chromeOptions.addArguments("headless");
+						chromeOptions.addArguments("window-size=1920x1080");
+						driver = new ChromeDriver(chromeOptions);
+						break;
+					case "firefox":
+						WebDriverManager.firefoxdriver().setup();
+						System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true");
+						System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");
+						driver = new FirefoxDriver();
+						break;
+					case "hfirefox":
+						WebDriverManager.firefoxdriver().setup();
+						System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true");
+						System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");
+			//			FirefoxOptions firefoxOptions = new FirefoxOptions();
+				//		firefoxOptions.setHeadless(true);
+			//		driver = new FirefoxDriver(firefoxOptions);
+						break;
+					case "ie":
+						WebDriverManager.iedriver().arch32().setup();
+						driver = new InternetExplorerDriver();
+						break;
+					default:
+						WebDriverManager.chromedriver().version("78.0.3904.70").setup();
+						driver = new ChromeDriver();
+						break;
+					}
+					// Browser crash/ stop
+				} catch (UnreachableBrowserException e) {
+					driver = new ChromeDriver();
+					// Driver crash
+				} catch (WebDriverException e) {
+					driver = new ChromeDriver();
+				}
+				// Code này luôn luôn được chạy dù pass hay fail
+				finally {
+					Runtime.getRuntime().addShutdownHook(new Thread(new BrowserCleanup()));
 				}
 
-				switch (browser) {
-				case "chrome":
-					WebDriverManager.chromedriver().setup();
-					driver = new ChromeDriver();
-					break;
-				case "hchrome":
-					WebDriverManager.chromedriver().setup();
-					ChromeOptions chromeOptions = new ChromeOptions();
-					chromeOptions.addArguments("headless");
-					chromeOptions.addArguments("window-size=1920x1080");
-					driver = new ChromeDriver(chromeOptions);
-					break;
-				case "firefox":
-					WebDriverManager.firefoxdriver().setup();
-					System.setProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true");
-					System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");
-					driver = new FirefoxDriver();
-				case "safari":
-					// WebDriverManager.s
-					break;
-				default:
-					WebDriverManager.chromedriver().setup();
-					driver = new ChromeDriver();
-					break;
+				driver.get(GlobalConstants.LOGIN_BANKGURU_URL);
+				driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+				log.info("------------- Started the browser -------------");
+			}
+			return driver;
+		}
+
+		public static void close() {
+			try {
+				if (driver != null) {
+					openAndQuitBrowser().quit();
+					log.info("------------- Closed the browser -------------");
 				}
 			} catch (UnreachableBrowserException e) {
-				System.out.println(e.getMessage());
-			} catch (WebDriverException e) {
-				e.printStackTrace();
-
-			} finally {
-				// Runtime.getRuntime().addShutdownHook(new Thread(new BrowserCleanup()));
+				System.out.println("Can not close the browser");
 			}
 		}
-		driver.get(GlobalConstants.LOGIN_BANKGURU_URL);
-		driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
-		return driver;
 
-	}
-
-	private boolean checkFailed(boolean condition) {
-		boolean pass = true;
-		try {
-			if (condition == false) {
-				// log.info(" -------------------------- PASSED -------------------------- ");
-			} else {
-				// log.info(" -------------------------- FAILED -------------------------- ");
+		private static class BrowserCleanup implements Runnable {
+			@Override
+			public void run() {
+				close();
 			}
-			Assert.assertFalse(condition);
-		} catch (Throwable e) {
-			pass = false;
-			// VerificationFailures.getFailures().addFailureForTest(Reporter.getCurrentTestResult(),
-			// e);
 		}
-		return pass;
-	}
-
-	protected boolean verifyFalse(boolean condition) {
-		return checkFailed(condition);
-	}
-
-	private boolean checkEquals(Object actual, Object expected) {
-		boolean pass = true;
-		try {
-			Assert.assertEquals(actual, expected);
-			// log.info(" -------------------------- PASSED -------------------------- ");
-		} catch (Throwable e) {
-			pass = false;
-			// log.info(" -------------------------- FAILED -------------------------- ");
-			// VerificationFailures.getFailures().addFailureForTest(Reporter.getCurrentTestResult(),
-			// e);
-		}
-		return pass;
-	}
-
-	protected boolean verifyEquals(String actual, String expected) {
-		return checkEquals(actual, expected);
-	}
-
-	protected void closeBrowserAndDriver(WebDriver driver) {
-		try {
-			// get ra tên của OS và convert qua chữ thường
-			String osName = System.getProperty("os.name").toLowerCase();
-			// log.info("OS name = " + osName);
-
-			// Khai báo 1 biến command line để thực thi
-			String cmd = "";
-			if (driver != null) {
-				driver.quit();
-			}
-
-			if (driver.toString().toLowerCase().contains("chrome")) {
-				if (osName.toLowerCase().contains("mac")) {
-					cmd = "pkill chromedriver";
-				} else if (osName.toLowerCase().contains("windows")) {
-					cmd = "taskkill /F /FI \"IMAGENAME eq chromedriver*\"";
-				}
-			} else if (driver.toString().toLowerCase().contains("internetexplorer")) {
-				if (osName.toLowerCase().contains("window")) {
-					cmd = "taskkill /F /FI \"IMAGENAME eq IEDriverServer*\"";
-				}
-			} else if (driver.toString().toLowerCase().contains("firefox")) {
-				if (osName.toLowerCase().contains("mac")) {
-					cmd = "pkill geckodriver";
-				} else if (osName.toLowerCase().contains("windows")) {
-					cmd = "taskkill /F /FI \"IMAGENAME eq geckodriver*\"";
-				}
-			}
-
-			Process process = Runtime.getRuntime().exec(cmd);
-			process.waitFor();
-
-			// log.info("---------- QUIT BROWSER SUCCESS ----------");
-		} catch (Exception e) {
-			// log.info(e.getMessage());
-		}
-	}
-
-	protected Object formatDate(String dateValue) {
-		String pattern = "yyyy-MM-dd";
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
-		try {
-			Date date = simpleDateFormat.parse(dateValue);
-			dateValue = simpleDateFormat.format(date);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return dateValue;
-	}
-
-	protected String getCurrentDay() {
-		DateTime nowUTC = new DateTime(DateTimeZone.UTC);
-		int day = nowUTC.getDayOfMonth();
-		if (day < 10) {
-			String dayValue = "0" + day;
-			return dayValue;
-		}
-		return day + "";
-	}
-
-	protected String getCurrentMonth() {
-		DateTime now = new DateTime(DateTimeZone.UTC);
-		int month = now.getMonthOfYear();
-		if (month < 10) {
-			String monthValue = "0" + month;
-			return monthValue;
-		}
-		return month + "";
-	}
-
-	protected String getCurrentYear() {
-		DateTime now = new DateTime(DateTimeZone.UTC);
-		return now.getYear() + "";
-	}
-
-	protected String getBankGuruToday() {
-		return getCurrentYear() + "-" + getCurrentMonth() + "-" + getCurrentDay();
-	}
 }

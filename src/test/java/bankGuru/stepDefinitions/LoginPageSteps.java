@@ -21,16 +21,16 @@ public class LoginPageSteps {
 
 
 	public LoginPageSteps() {
-		driver = Hooks.openAndQuitBrowser();
+		this.driver = Hooks.openAndQuitBrowser();
 		loginPage = PageGeneratorManager.getLoginPage(driver);
 		registerPage = PageGeneratorManager.getRegisterPage(driver);
 		homePage = PageGeneratorManager.getHomePage(driver);
 	}
 
-	@Given("^Get login page url$")
-	public void getLoginPageUrl()  {
-		loginPage.getLoginPageUrl();
-	}
+//	@Given("^Get login page url$")
+//	public void getLoginPageUrl()  {
+//		loginPage.getLoginPageUrl();
+//	}
 
 	@Given("^Open Register page$")
 	public void open_Register_page()  {
