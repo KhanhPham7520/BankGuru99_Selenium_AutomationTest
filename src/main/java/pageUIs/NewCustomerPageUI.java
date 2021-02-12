@@ -1,5 +1,7 @@
 package pageUIs;
 
-public class NewCustomerPageUI {
+import commons.AbstractPageUI;
+
+public class NewCustomerPageUI extends AbstractPageUI {
 
 }

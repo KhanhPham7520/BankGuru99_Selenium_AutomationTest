@@ -90,7 +90,7 @@ public class Hooks {
 				}
 
 				driver.get(GlobalConstants.LOGIN_BANKGURU_URL);
-				driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+				driver.manage().timeouts().implicitlyWait(GlobalConstants.LONG_TIMEOUT, TimeUnit.SECONDS);
 				log.info("------------- Started the browser -------------");
 			}
 			return driver;

@@ -1,5 +1,5 @@
-@customer 
-Feature: Register / Login And New Customer
+@customer
+ Feature: Register / Login And New Customer
 
   @Register_Login
   Scenario: Register to system and login
@@ -11,10 +11,9 @@ Feature: Register / Login And New Customer
     And Submit valid infor to login form
     Then Home page displayed
 
-    
    @new_customer
    Scenario Outline: New Customer
-   	Given Open "New Customer" page
+   	Given Navigate to New Customer page
    	When Input to "Customer Name" textbox with value "<CustomerName>"
    	When Click to "Male Option" radio
    	When Input to "Date of birth" textbox with value "<DobIn>"
@@ -31,7 +30,7 @@ Feature: Register / Login And New Customer
    	
    	
    	Examples:
-		|CustomerName| DobIn           | DobOut            | Address    | City    | State  | Pin   | Phone  | Email 													 | Password |
+		|CustomerName | DobIn           | DobOut            | Address    | City    | State  | Pin   | Phone  | Email 													 | Password |
     | Joe Hart    | 09/13/1995     | 1905-09-13        | Ho Chi Minh| Thu Duc | Quan 9 | 65000 | 094232 | phamphannhatkhanh7520@gmail.com  | 12345678 |
     
     

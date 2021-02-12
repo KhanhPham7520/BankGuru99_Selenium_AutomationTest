@@ -167,8 +167,13 @@ public abstract class AbstractPages {
     }
 
     public void clickToElement(WebDriver driver, String locator, String... values) {
-        // element = findElementByXpath(driver, locator, values);
-        // highlightElement(driver, element);
+    	// element = findElementByXpath(driver, locator, values);
+    	// highlightElement(driver, element);
+    	findElementByXpath(driver, locator, values).click();
+    }
+    
+    public void clickToLink(WebDriver driver, String locator, String... values) {
+        waitToElementClickable(driver, locator, values);
         findElementByXpath(driver, locator, values).click();
     }
 
@@ -317,10 +322,8 @@ public abstract class AbstractPages {
         jsExcutor = (JavascriptExecutor) driver;
         element = findElementByXpath(driver, locator, values);
         jsExcutor.executeScript("arguments[0].removeAttribute('" + attributeRemove + "');", element);
-        sleepInSecond();
     }
 
-    // Click into button element
 
     public void clickIntoButton(WebDriver driver, String locator, String... values) {
         waitToElementClickable(driver, locator, values);
@@ -484,8 +487,13 @@ public abstract class AbstractPages {
     }
 
     public void inputToTextbox(WebDriver driver, String locator, String enterValue) {
-        waitToElementVisible(driver, locator);
-        sendKeyToElement(driver, locator, enterValue);
+    	waitToElementVisible(driver, locator);
+    	sendKeyToElement(driver, locator, enterValue);
+    }
+    
+    public void inputToTextbox(WebDriver driver, String locator, String enterValue, String...values) {
+        waitToElementVisible(driver, locator,values);
+        sendKeyToElement(driver, locator, enterValue,values);
     }
 
     public void switchToPage(WebDriver driver, String urlValue) {
